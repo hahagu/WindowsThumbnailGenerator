@@ -91,7 +91,6 @@ namespace Thumbnail_Generator
             mask.HasAlpha = false;
             srcImage.HasAlpha = false;
             srcImage.Composite(mask, CompositeOperator.CopyAlpha);
-            srcImage.Write("DEBUG_COMPOSITE.png");
 
             return srcImage.ToByteArray();
         }
