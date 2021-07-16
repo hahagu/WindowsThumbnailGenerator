@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Thumbnail_Generator
 {
@@ -25,7 +26,7 @@ namespace Thumbnail_Generator
             exportICO(bgImage.ToByteArray(), filePath);
         }
 
-        public byte[] compositeThumbnail(string[] fileArray)
+        private byte[] compositeThumbnail(string[] fileArray)
         {
             using MagickImageCollection magickCollection = new();
 
@@ -59,7 +60,7 @@ namespace Thumbnail_Generator
             return result_bytes;
         }
 
-        public byte[] roundEdges(byte[] srcBytes, int radius = 10)
+        private byte[] roundEdges(byte[] srcBytes, int radius = 10)
         {
             using MagickImage srcImage = new MagickImage(srcBytes);
 
@@ -95,7 +96,7 @@ namespace Thumbnail_Generator
             return srcImage.ToByteArray();
         }
 
-        public byte[] applyGradient(byte[] srcBytes)
+        private byte[] applyGradient(byte[] srcBytes)
         {
             using MagickImage srcImage = new MagickImage(srcBytes);
 
@@ -115,10 +116,17 @@ namespace Thumbnail_Generator
             return stream.ToArray();
         }
 
-        public void exportICO(byte[] srcImage, string filePath)
+        private void exportICO(byte[] srcImage, string filePath)
         {
             using MagickImage outImage = new(srcImage);
-            outImage.Write(filePath + ".ico");
+            try
+            {
+                outImage.Write(filePath + ".ico");
+            }
+            catch(ImageMagick.MagickBlobErrorException e)
+            {
+                MessageBox.Show("Error writing thumb.ico! Please check if the file is being used by another application!", "Write Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
         }
     }
 }

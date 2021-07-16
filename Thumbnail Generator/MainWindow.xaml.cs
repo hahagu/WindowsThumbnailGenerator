@@ -1,6 +1,7 @@
 ﻿using Ookii.Dialogs.Wpf;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 
 namespace Thumbnail_Generator
@@ -23,34 +24,81 @@ namespace Thumbnail_Generator
         {
             ImageHandler imageHandler = new ImageHandler();
             string[] pathList = { rootFolder };
-            string[] fileList = { };
 
             if (recursive)
             {
-                pathList = Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories);
+                pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
             }
 
             foreach (string directory in pathList)
             {
+                unsetSystem(directory + "\\thumb.ico");
+
+                string[] fileList = { };
                 foreach (string fileFormat in supportedFiles)
                 {
                     fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
                 }
 
-                if (fileList.Length <= 0) break;
+                if (fileList.Length <= 0) continue;
                 if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
 
                 imageHandler.generateThumbnail(fileList, directory + "\\thumb");
+
+                setSystem(directory + "\\thumb.ico");
+                applyFolderIcon(directory, directory + "\\thumb.ico");
             }
+        }
+
+        private void applyFolderIcon(string targetFolderPath, string iconFilePath)
+        {
+            var iniPath = Path.Combine(targetFolderPath, "desktop.ini");
+            unsetSystem(iniPath);
+
+            // Writes desktop.ini Contents
+            var iniContents = new StringBuilder()
+                .AppendLine("[.ShellClassInfo]")
+                .AppendLine($"IconResource={iconFilePath},0")
+                .AppendLine($"IconFile={iconFilePath}")
+                .AppendLine("IconIndex=0")
+                .ToString();
+            File.WriteAllText(iniPath, iniContents);
+
+            // Set Folder SYSTEM flag, to show thumbnail
+            File.SetAttributes(
+                targetFolderPath,
+                File.GetAttributes(targetFolderPath) | FileAttributes.System);
+
+            setSystem(iniPath);
+        }
+
+        private void unsetSystem(string targetPath)
+        {
+            if (File.Exists(targetPath))
+            {
+                // Make Read Writable
+                File.SetAttributes(
+                   targetPath,
+                   File.GetAttributes(targetPath) &
+                   ~(FileAttributes.Hidden | FileAttributes.System));
+            }
+        }
+
+        private void setSystem(string targetPath)
+        {
+            File.SetAttributes(
+               targetPath,
+               File.GetAttributes(targetPath) | FileAttributes.Hidden | FileAttributes.System);
         }
 
         private void browseBtn_Click(object sender, RoutedEventArgs e)
         {
-            VistaFolderBrowserDialog folderBrowser = new VistaFolderBrowserDialog();
-            if (folderBrowser.ShowDialog().GetValueOrDefault())
+            VistaFolderBrowserDialog folderBrowser = new();
+            if (!folderBrowser.ShowDialog().GetValueOrDefault())
             {
-                targetFolder.Text = folderBrowser.SelectedPath;
+                return;
             }
+            targetFolder.Text = folderBrowser.SelectedPath;
         }
 
         private void startBtn_Click(object sender, RoutedEventArgs e)

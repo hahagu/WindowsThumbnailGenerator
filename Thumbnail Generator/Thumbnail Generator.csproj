@@ -55,4 +55,8 @@
     </None>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="cd &quot;$(TargetDir)&quot; &amp;&amp; rd /s /q &quot;af-ZA&quot; &quot;am-ET&quot; &quot;ar-SA&quot; &quot;az-Latn-AZ&quot; &quot;be-BY&quot; &quot;bg-BG&quot; &quot;bn-BD&quot; &quot;bs-Latn-BA&quot; &quot;ca-ES&quot; &quot;cs-CZ&quot; &quot;da-DK&quot; &quot;de-DE&quot; &quot;el-GR&quot; &quot;en-GB&quot; &quot;es-ES&quot; &quot;es-MX&quot; &quot;et-EE&quot; &quot;eu-ES&quot; &quot;fa-IR&quot; &quot;fi-FI&quot; &quot;fr-CA&quot; &quot;fr-FR&quot; &quot;gl-ES&quot; &quot;ha-Latn-NG&quot; &quot;he-IL&quot; &quot;hi-IN&quot; &quot;hr-HR&quot; &quot;hu-HU&quot; &quot;id-ID&quot; &quot;is-IS&quot; &quot;it-IT&quot; &quot;ja-JP&quot; &quot;ka-GE&quot; &quot;kk-KZ&quot; &quot;km-KH&quot; &quot;kn-IN&quot; &quot;ko-KR&quot; &quot;lo-LA&quot; &quot;lt-LT&quot; &quot;lv-LV&quot; &quot;mk-MK&quot; &quot;ml-IN&quot; &quot;ms-MY&quot; &quot;nb-NO&quot; &quot;nl-NL&quot; &quot;nn-NO&quot; &quot;pl-PL&quot; &quot;pt-BR&quot; &quot;pt-PT&quot; &quot;ref&quot; &quot;ro-RO&quot; &quot;ru-RU&quot; &quot;sk-SK&quot; &quot;sl-SI&quot; &quot;sq-AL&quot; &quot;sr-Latn-RS&quot; &quot;sv-SE&quot; &quot;sw-KE&quot; &quot;ta-IN&quot; &quot;te-IN&quot; &quot;th-TH&quot; &quot;tr-TR&quot; &quot;uk-UA&quot; &quot;uz-Latn-UZ&quot; &quot;vi-VN&quot; &quot;zh-CN&quot; &quot;zh-TW&quot;" />
+  </Target>
+
 </Project>
