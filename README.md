@@ -6,7 +6,7 @@ It uses ImageMagick to composite media thumbnails in a folder to create a thumbn
 ## Usage
 The usage is simple.
 
-1. Download the application from the <a href="./releases">Releases</a> page
+1. Download the application from the <a href="https://github.com/hahagu/WindowsThumbnailGenerator/releases">Releases</a> page
 2. Start up `Thumbnail Generator.exe`
 3. Choose a directory
 4. Choose whether to generate thumbnails recursively (If checked, the application will create thumbnail icons for subfolders as well.)
