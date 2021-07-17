@@ -38,7 +38,7 @@ namespace Thumbnail_Generator
 
                 int calcHeight = image.Height * (contentWidth / image.Height);
                 image.Resize(contentWidth, calcHeight);
-                image.Crop(contentWidth, contentHeight / fileArray.Count());
+                image.Crop(contentWidth, contentHeight / fileArray.Count(), Gravity.Center);
                 image.RePage();
                 
                 MagickImage composite = new(applyGradient(image.ToByteArray()));

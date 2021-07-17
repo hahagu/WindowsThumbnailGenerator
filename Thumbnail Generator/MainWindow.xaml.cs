@@ -1,8 +1,13 @@
 ﻿using Ookii.Dialogs.Wpf;
+using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Thumbnail_Generator
 {
@@ -15,14 +20,25 @@ namespace Thumbnail_Generator
             "jpg", "jpeg", "png", "mp4", "mov", "wmv", "avi", "mkv"
         };
 
+        private volatile int progressCount;
+        private volatile float progressPercentage;
+
         public MainWindow()
         {
             InitializeComponent();
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        private void generateThumbnailsForFolder(string rootFolder, int fileCount, bool recursive)
+        private async void generateThumbnailsForFolder(string rootFolder, int fileCount, bool recursive)
         {
-            ImageHandler imageHandler = new ImageHandler();
+            progressCount = 0;
+            progressPercentage = 0;
+
+            startBtn.IsEnabled = false;
+            startBtn.Visibility = Visibility.Hidden;
+            currentProgress.Visibility = Visibility.Visible;
+            progressLabel.Visibility = Visibility.Visible;
+
             string[] pathList = { rootFolder };
 
             if (recursive)
@@ -30,8 +46,21 @@ namespace Thumbnail_Generator
                 pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
             }
 
-            foreach (string directory in pathList)
+            await Task.Run(() => processParallel(pathList, fileCount));
+
+            startBtn.IsEnabled = true;
+            startBtn.Visibility = Visibility.Visible;
+            currentProgress.Visibility = Visibility.Hidden;
+            progressLabel.Visibility = Visibility.Hidden;
+            currentProgress.Value = 0;
+            progressLabel.Content = "0%";
+        }
+
+        private void processParallel(string[] pathList, int fileCount)
+        {
+            Parallel.ForEach(pathList, directory =>
             {
+                ImageHandler imageHandler = new();
                 unsetSystem(directory + "\\thumb.ico");
 
                 string[] fileList = { };
@@ -40,14 +69,24 @@ namespace Thumbnail_Generator
                     fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
                 }
 
-                if (fileList.Length <= 0) continue;
+                if (fileList.Length <= 0) return;
                 if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
 
                 imageHandler.generateThumbnail(fileList, directory + "\\thumb");
 
                 setSystem(directory + "\\thumb.ico");
                 applyFolderIcon(directory, directory + "\\thumb.ico");
-            }
+
+                progressCount++;
+                progressPercentage = (float)progressCount / pathList.Length * 100;
+
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    currentProgress.Value = progressPercentage;
+                    progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
+                }));
+
+            });
         }
 
         private void applyFolderIcon(string targetFolderPath, string iconFilePath)
@@ -58,16 +97,25 @@ namespace Thumbnail_Generator
             // Writes desktop.ini Contents
             var iniContents = new StringBuilder()
                 .AppendLine("[.ShellClassInfo]")
-                .AppendLine($"IconResource={iconFilePath},0")
-                .AppendLine($"IconFile={iconFilePath}")
+                .AppendLine("IconResource=" + iconFilePath +",0")
+                .AppendLine($"IconFile=" + iconFilePath)
                 .AppendLine("IconIndex=0")
+                .AppendLine("[ViewState]")
+                .AppendLine("Mode=")
+                .AppendLine("Mode=")
+                .AppendLine("Vid=")
                 .ToString();
-            File.WriteAllText(iniPath, iniContents);
+
+            int lcid = CultureInfo.CurrentCulture.LCID;
+            int codepage = CultureInfo.GetCultureInfo(lcid).TextInfo.ANSICodePage;
+            Encoding encoding = Encoding.GetEncoding(codepage);
+
+            File.WriteAllText(iniPath, iniContents, encoding);
 
             // Set Folder SYSTEM flag, to show thumbnail
             File.SetAttributes(
                 targetFolderPath,
-                File.GetAttributes(targetFolderPath) | FileAttributes.System);
+                FileAttributes.ReadOnly);
 
             setSystem(iniPath);
         }
