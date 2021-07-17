@@ -15,7 +15,7 @@ The usage is simple.
 The application will automatically generate thumbnails and place them in correct directories.
 
 ## Troubleshooting
-#### Thumbnails not updating
+### Thumbnails not updating
 If thumbnails are not updating, it is most likely the thumbnail cache not being properly updated.
 
 Therefore, you need to reset the thumbnail cache.
@@ -24,7 +24,7 @@ To do this, you have to open up the `Disk Cleanup` utility, check the box for Th
 
 This will effectively delete all folder icon cache, so they will be forced to be updated.
 
-#### Folders containing special characters
+### Folders containing special characters
 The `desktop.ini` file by default, is always made in the native language encoding that your Windows is in.
 
 However, when we are manually writing the `desktop.ini` file, the encoding is by default, UTF-8.
