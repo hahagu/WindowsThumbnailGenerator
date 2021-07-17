@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Thumbnail_Generator
 {
@@ -23,7 +24,6 @@ namespace Thumbnail_Generator
         public MainWindow()
         {
             InitializeComponent();
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         private async void generateThumbnailsForFolder(string rootFolder, int fileCount, bool recursive)
@@ -53,11 +53,10 @@ namespace Thumbnail_Generator
             progressLabel.Content = "0%";
         }
 
-        private void processParallel(string[] pathList, int fileCount, float cpuPercentage = 75)
+        private void processParallel(string[] pathList, int fileCount)
         {
             _ = Parallel.ForEach(pathList, directory =>
               {
-                  //new ParallelOptions { MaxDegreeOfParallelism = };
 
                   string iconLocation = Path.Combine(directory, "thumb.ico");
                   ImageHandler imageHandler = new();
@@ -147,6 +146,16 @@ namespace Thumbnail_Generator
 
         private void startBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (targetFolder.Text.Length <= 0)
+            {
+                System.Windows.Forms.MessageBox.Show("You didn't choose a folder!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            } else if (!Directory.Exists(targetFolder.Text))
+            {
+                System.Windows.Forms.MessageBox.Show("The directory you chose does not exist!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             generateThumbnailsForFolder(targetFolder.Text, 3, recursiveChk.IsChecked.GetValueOrDefault());
         }
     }
