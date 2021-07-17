@@ -1,9 +1,7 @@
 ﻿using ImageMagick;
 using Microsoft.WindowsAPICodePack.Shell;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Thumbnail_Generator
@@ -11,7 +9,7 @@ namespace Thumbnail_Generator
     class ImageHandler
     {
         private static readonly int contentWidth = 224;
-        private static readonly int contentHeight = 80;
+        private static readonly int contentHeight = 75;
 
         public void generateThumbnail(string[] fileArray, string filePath)
         {
@@ -21,9 +19,9 @@ namespace Thumbnail_Generator
 
             contents.Crop(contentWidth, contentHeight);
 
-            bgImage.Composite(contents, Gravity.Center, 1, -18, CompositeOperator.Over);
+            bgImage.Composite(contents, Gravity.Center, 1, -20, CompositeOperator.Over);
             bgImage.Composite(fgImage, Gravity.Center, CompositeOperator.Over);
-            exportICO(bgImage.ToByteArray(), filePath);
+            exportImage(bgImage.ToByteArray(), filePath);
         }
 
         private byte[] compositeThumbnail(string[] fileArray)
@@ -34,13 +32,14 @@ namespace Thumbnail_Generator
             foreach (string filePath in fileArray)
             {
                 ShellFile shellFile = ShellFile.FromFilePath(filePath);
-                MagickImage image = new(bitmapToArray(shellFile.Thumbnail.Bitmap));
+                shellFile.Thumbnail.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
+                MagickImage image = new(bitmapToArray(shellFile.Thumbnail.ExtraLargeBitmap));
 
                 int calcHeight = image.Height * (contentWidth / image.Height);
-                image.Resize(contentWidth, calcHeight);
-                image.Crop(contentWidth, contentHeight / fileArray.Count(), Gravity.Center);
+                image.Scale(contentWidth, calcHeight);
+                image.Extent(0, image.Height / 8, contentWidth, contentHeight / fileArray.Length);
                 image.RePage();
-                
+
                 MagickImage composite = new(applyGradient(image.ToByteArray()));
 
                 if (isFirst)
@@ -48,11 +47,11 @@ namespace Thumbnail_Generator
                     MagickImage roundedImage = new(roundEdges(composite.ToByteArray()));
                     magickCollection.Add(roundedImage);
                     isFirst = false;
-                } else
+                }
+                else
                 {
                     magickCollection.Add(composite);
                 }
-                
             }
 
             byte[] result_bytes = magickCollection.AppendVertically().ToByteArray();
@@ -99,7 +98,7 @@ namespace Thumbnail_Generator
         {
             using MagickImage srcImage = new MagickImage(srcBytes);
 
-            MagickImage gradient = new($"gradient:none-black", srcImage.Width, srcImage.Height);
+            MagickImage gradient = new("gradient:none-black", srcImage.Width, srcImage.Height);
             gradient.Alpha(AlphaOption.Set);
             gradient.Evaluate(Channels.Alpha, EvaluateOperator.Divide, 2);
 
@@ -115,14 +114,14 @@ namespace Thumbnail_Generator
             return stream.ToArray();
         }
 
-        private void exportICO(byte[] srcImage, string filePath)
+        private void exportImage(byte[] srcImage, string filePath)
         {
             using MagickImage outImage = new(srcImage);
             try
             {
-                outImage.Write(filePath + ".ico");
+                outImage.Write(filePath);
             }
-            catch(ImageMagick.MagickBlobErrorException e)
+            catch (MagickBlobErrorException e)
             {
                 MessageBox.Show("Error writing thumb.ico! Please check if the file is being used by another application!", "Write Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }

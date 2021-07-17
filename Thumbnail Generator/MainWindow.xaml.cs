@@ -1,13 +1,10 @@
 ﻿using Ookii.Dialogs.Wpf;
 using System;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace Thumbnail_Generator
 {
@@ -16,7 +13,7 @@ namespace Thumbnail_Generator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly string[] supportedFiles = { 
+        private static readonly string[] supportedFiles = {
             "jpg", "jpeg", "png", "mp4", "mov", "wmv", "avi", "mkv"
         };
 
@@ -56,37 +53,40 @@ namespace Thumbnail_Generator
             progressLabel.Content = "0%";
         }
 
-        private void processParallel(string[] pathList, int fileCount)
+        private void processParallel(string[] pathList, int fileCount, float cpuPercentage = 75)
         {
-            Parallel.ForEach(pathList, directory =>
-            {
-                ImageHandler imageHandler = new();
-                unsetSystem(directory + "\\thumb.ico");
+            _ = Parallel.ForEach(pathList, directory =>
+              {
+                  //new ParallelOptions { MaxDegreeOfParallelism = };
 
-                string[] fileList = { };
-                foreach (string fileFormat in supportedFiles)
-                {
-                    fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
-                }
+                  string iconLocation = Path.Combine(directory, "thumb.ico");
+                  ImageHandler imageHandler = new();
+                  unsetSystem(iconLocation);
 
-                if (fileList.Length <= 0) return;
-                if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
+                  string[] fileList = { };
+                  foreach (string fileFormat in supportedFiles)
+                  {
+                      fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
+                  }
 
-                imageHandler.generateThumbnail(fileList, directory + "\\thumb");
+                  if (fileList.Length <= 0) return;
+                  if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
 
-                setSystem(directory + "\\thumb.ico");
-                applyFolderIcon(directory, directory + "\\thumb.ico");
+                  imageHandler.generateThumbnail(fileList, iconLocation);
 
-                progressCount++;
-                progressPercentage = (float)progressCount / pathList.Length * 100;
+                  setSystem(iconLocation);
+                  applyFolderIcon(directory, iconLocation);
 
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    currentProgress.Value = progressPercentage;
-                    progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
-                }));
+                  progressCount++;
+                  progressPercentage = (float)progressCount / pathList.Length * 100;
 
-            });
+                  Dispatcher.Invoke(new Action(() =>
+                  {
+                      currentProgress.Value = progressPercentage;
+                      progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
+                  }));
+
+              });
         }
 
         private void applyFolderIcon(string targetFolderPath, string iconFilePath)
@@ -97,8 +97,8 @@ namespace Thumbnail_Generator
             // Writes desktop.ini Contents
             var iniContents = new StringBuilder()
                 .AppendLine("[.ShellClassInfo]")
-                .AppendLine("IconResource=" + iconFilePath +",0")
-                .AppendLine($"IconFile=" + iconFilePath)
+                .AppendLine("IconResource=" + iconFilePath + ",0")
+                .AppendLine("IconFile=" + iconFilePath)
                 .AppendLine("IconIndex=0")
                 .AppendLine("[ViewState]")
                 .AppendLine("Mode=")
@@ -106,11 +106,7 @@ namespace Thumbnail_Generator
                 .AppendLine("Vid=")
                 .ToString();
 
-            int lcid = CultureInfo.CurrentCulture.LCID;
-            int codepage = CultureInfo.GetCultureInfo(lcid).TextInfo.ANSICodePage;
-            Encoding encoding = Encoding.GetEncoding(codepage);
-
-            File.WriteAllText(iniPath, iniContents, encoding);
+            File.WriteAllText(iniPath, iniContents);
 
             // Set Folder SYSTEM flag, to show thumbnail
             File.SetAttributes(
