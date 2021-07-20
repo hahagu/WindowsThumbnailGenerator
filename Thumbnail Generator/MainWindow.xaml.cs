@@ -44,7 +44,7 @@ namespace Thumbnail_Generator
                 pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
             }
 
-            await Task.Run(() => processParallel(pathList, fileCount, skipExisting));
+            await Task.Run(() => processParallel(pathList, fileCount, skipExisting, Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.75) * 1.0))));
 
             startBtn.IsEnabled = true;
             startBtn.Visibility = Visibility.Visible;
