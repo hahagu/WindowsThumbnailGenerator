@@ -56,41 +56,44 @@ namespace Thumbnail_Generator
             if (cleanChk.IsChecked.GetValueOrDefault()) clearCache();
         }
 
-        private void processParallel(string[] pathList, int fileCount, bool skipExisting)
+        private void processParallel(string[] pathList, int fileCount, bool skipExisting, int maxThreads = 4)
         {
-            _ = Parallel.ForEach(pathList, directory =>
-              {
-                  string iconLocation = Path.Combine(directory, "thumb.ico");
-                  string iniLocation = Path.Combine(directory, "desktop.ini");
-
-                  if (File.Exists(iniLocation) && skipExisting) return;
-
-                  ImageHandler imageHandler = new();
-                  unsetSystem(iconLocation);
-
-                  string[] fileList = { };
-                  foreach (string fileFormat in supportedFiles)
+            _ = Parallel.ForEach(pathList,
+                new ParallelOptions { MaxDegreeOfParallelism = maxThreads },
+                directory =>
                   {
-                      fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
+                      string iconLocation = Path.Combine(directory, "thumb.ico");
+                      string iniLocation = Path.Combine(directory, "desktop.ini");
+
+                      if (File.Exists(iniLocation) && skipExisting) return;
+
+                      ImageHandler imageHandler = new();
+                      unsetSystem(iconLocation);
+
+                      string[] fileList = { };
+                      foreach (string fileFormat in supportedFiles)
+                      {
+                          fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
+                      }
+
+                      if (fileList.Length <= 0) return;
+                      if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
+
+                      imageHandler.generateThumbnail(fileList, iconLocation);
+
+                      setSystem(iconLocation);
+                      applyFolderIcon(directory, iconLocation);
+
+                      progressCount++;
+                      progressPercentage = (float)progressCount / pathList.Length * 100;
+
+                      Dispatcher.Invoke(new Action(() =>
+                      {
+                          currentProgress.Value = progressPercentage;
+                          progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
+                      }));
                   }
-
-                  if (fileList.Length <= 0) return;
-                  if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
-
-                  imageHandler.generateThumbnail(fileList, iconLocation);
-
-                  setSystem(iconLocation);
-                  applyFolderIcon(directory, iconLocation);
-
-                  progressCount++;
-                  progressPercentage = (float)progressCount / pathList.Length * 100;
-
-                  Dispatcher.Invoke(new Action(() =>
-                  {
-                      currentProgress.Value = progressPercentage;
-                      progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
-                  }));
-              });
+              );
         }
 
         private void applyFolderIcon(string targetFolderPath, string iconFilePath)
@@ -196,7 +199,7 @@ namespace Thumbnail_Generator
 
         private void cleanChk_Checked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show("Choosing this option will restart explorer!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            System.Windows.Forms.MessageBox.Show("Choosing this option will restart explorer! Save your work before pdroceeding!" , "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }
