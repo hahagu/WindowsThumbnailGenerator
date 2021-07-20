@@ -8,12 +8,13 @@
         ui:WindowHelper.UseModernWindowStyle="True"
         Title="Thumbnail Generator"
         Height="170" Width="600"
-        MaxHeight="170" MaxWidth="600"
-        MinHeight="170" MinWidth="600"
+        MaxHeight="210" MaxWidth="600"
+        MinHeight="210" MinWidth="600"
         ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"></RowDefinition>
+            <RowDefinition Height="40px"></RowDefinition>
             <RowDefinition Height="40px"></RowDefinition>
             <RowDefinition Height="40px"></RowDefinition>
         </Grid.RowDefinitions>
@@ -38,11 +39,42 @@
             <CheckBox x:Name="cleanChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Clear Explorer Cache" Grid.Column="1" Checked="cleanChk_Checked" ToolTip="This will clear the explorer cache upon completion." ></CheckBox>
             <CheckBox x:Name="skipExistingChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Skip Existing" Grid.Column="2" ToolTip="This option will make the tool skip directories that already has a desktop.ini file."></CheckBox>
         </Grid>
+        
+        <Grid Grid.Row="2" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="115px" ></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="Max Thumbnails:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ui:NumberBox x:Name="maxThumbCount" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0"
+                              ValidationMode="InvalidInputOverwritten"
+                              Value="3" Minimum="1" Maximum="100"
+                              SpinButtonPlacementMode="Inline"></ui:NumberBox>
+            </Grid>
+            
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="110px" ></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="Max Threads:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <ui:NumberBox x:Name="maxThreadsCount" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                              ValidationMode="InvalidInputOverwritten"
+                              Value="1" Minimum="1"
+                              SpinButtonPlacementMode="Inline"></ui:NumberBox>
+            </Grid>
+        </Grid>
 
-        <Button x:Name="startBtn" Grid.Row="2" Content="Start" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="startBtn_Click" ></Button>
+        <Button x:Name="startBtn" Grid.Row="3" Content="Start" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="startBtn_Click" ></Button>
 
-        <ProgressBar x:Name="currentProgress" Grid.Row="2" Height="30" Cursor="Wait" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Value="62" Opacity="1" Visibility="Hidden"/>
-        <Label x:Name="progressLabel" Content="0%" Margin="0,0,0,0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+        <ProgressBar x:Name="currentProgress" Grid.Row="3" Height="30" Cursor="Wait" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Value="62" Opacity="1" Visibility="Hidden"/>
+        <Label x:Name="progressLabel" Content="0%" Margin="0,0,0,0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
 
     </Grid>
 </Window>

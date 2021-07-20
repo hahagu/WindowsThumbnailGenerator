@@ -3,7 +3,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -25,9 +27,11 @@ namespace Thumbnail_Generator
         public MainWindow()
         {
             InitializeComponent();
+            maxThreadsCount.Maximum = Convert.ToInt32(Environment.ProcessorCount);
+            maxThreadsCount.Value = Convert.ToInt32(Environment.ProcessorCount);
         }
 
-        private async void generateThumbnailsForFolder(string rootFolder, int fileCount, bool recursive, bool skipExisting)
+        private async void generateThumbnailsForFolder(string rootFolder, int fileCount, int threadCount, bool recursive, bool skipExisting)
         {
             progressCount = 0;
             progressPercentage = 0;
@@ -44,7 +48,7 @@ namespace Thumbnail_Generator
                 pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
             }
 
-            await Task.Run(() => processParallel(pathList, fileCount, skipExisting, Convert.ToInt32(Math.Ceiling((Environment.ProcessorCount * 0.75) * 1.0))));
+            await Task.Run(() => processParallel(pathList, fileCount, skipExisting, threadCount));
 
             startBtn.IsEnabled = true;
             startBtn.Visibility = Visibility.Visible;
@@ -144,19 +148,9 @@ namespace Thumbnail_Generator
 
         private void clearCache()
         {
-            foreach (Process p in Process.GetProcesses())
-            {
-                try
-                {
-                    if (p.MainModule.FileName.ToLower().EndsWith(@":\Windows\explorer.exe"))
-                    {
-                        p.Kill();
-                        break;
-                    }
-                }
-                catch
-                { }
-            }
+            using RestartManagerSession rm = new();
+            rm.RegisterProcess(GetShellProcess());
+            rm.Shutdown(RestartManagerSession.ShutdownType.ForceShutdown);
 
             string localAppData = Environment.GetEnvironmentVariable("LocalAppData");
             string targetFolder = Path.Combine(localAppData, @"Microsoft\Windows\Explorer\");
@@ -169,7 +163,37 @@ namespace Thumbnail_Generator
                 File.Delete(file);
             }
 
-            Process.Start("explorer.exe");
+            rm.Restart();
+        }
+
+        [DllImport("user32")]
+        private static extern IntPtr GetShellWindow();
+
+        [DllImport("user32", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr windowHandle, out uint processId);
+
+        public static Process GetShellProcess()
+        {
+            try
+            {
+                var shellWindowHandle = GetShellWindow();
+
+                if (shellWindowHandle != IntPtr.Zero)
+                {
+                    GetWindowThreadProcessId(shellWindowHandle, out var shellPid);
+
+                    if (shellPid > 0)
+                    {
+                        return Process.GetProcessById((int) shellPid);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return null;
         }
 
         private void browseBtn_Click(object sender, RoutedEventArgs e)
@@ -194,12 +218,12 @@ namespace Thumbnail_Generator
                 return;
             }
 
-            generateThumbnailsForFolder(targetFolder.Text, 3, recursiveChk.IsChecked.GetValueOrDefault(), skipExistingChk.IsChecked.GetValueOrDefault());
+            generateThumbnailsForFolder(targetFolder.Text, (int)maxThumbCount.Value, (int)maxThreadsCount.Value, recursiveChk.IsChecked.GetValueOrDefault(), skipExistingChk.IsChecked.GetValueOrDefault());
         }
 
         private void cleanChk_Checked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show("Choosing this option will restart explorer! Save your work before pdroceeding!" , "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            System.Windows.Forms.MessageBox.Show("Choosing this option will restart explorer!\nSave your work before proceeding!" , "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }
