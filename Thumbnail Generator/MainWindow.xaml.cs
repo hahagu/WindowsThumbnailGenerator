@@ -31,7 +31,7 @@ namespace Thumbnail_Generator
             maxThreadsCount.Value = Convert.ToInt32(Environment.ProcessorCount);
         }
 
-        private async void generateThumbnailsForFolder(string rootFolder, int fileCount, int threadCount, bool recursive, bool skipExisting)
+        private async void generateThumbnailsForFolder(string rootFolder, int fileCount, int threadCount, bool recursive, bool skipExisting, bool useShort)
         {
             progressCount = 0;
             progressPercentage = 0;
@@ -48,7 +48,7 @@ namespace Thumbnail_Generator
                 pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
             }
 
-            await Task.Run(() => processParallel(pathList, fileCount, skipExisting, threadCount));
+            await Task.Run(() => processParallel(pathList, fileCount, skipExisting, useShort, threadCount));
 
             startBtn.IsEnabled = true;
             startBtn.Visibility = Visibility.Visible;
@@ -60,7 +60,7 @@ namespace Thumbnail_Generator
             if (cleanChk.IsChecked.GetValueOrDefault()) clearCache();
         }
 
-        private void processParallel(string[] pathList, int fileCount, bool skipExisting, int maxThreads = 4)
+        private void processParallel(string[] pathList, int fileCount, bool skipExisting, bool useShort, int maxThreads = 4)
         {
             _ = Parallel.ForEach(pathList,
                 new ParallelOptions { MaxDegreeOfParallelism = maxThreads },
@@ -83,7 +83,7 @@ namespace Thumbnail_Generator
                       if (fileList.Length <= 0) return;
                       if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
 
-                      imageHandler.generateThumbnail(fileList, iconLocation);
+                      imageHandler.generateThumbnail(fileList, iconLocation, useShort);
 
                       setSystem(iconLocation);
                       applyFolderIcon(directory, iconLocation);
@@ -218,7 +218,14 @@ namespace Thumbnail_Generator
                 return;
             }
 
-            generateThumbnailsForFolder(targetFolder.Text, (int)maxThumbCount.Value, (int)maxThreadsCount.Value, recursiveChk.IsChecked.GetValueOrDefault(), skipExistingChk.IsChecked.GetValueOrDefault());
+            generateThumbnailsForFolder(
+                targetFolder.Text,
+                (int)maxThumbCount.Value,
+                (int)maxThreadsCount.Value,
+                recursiveChk.IsChecked.GetValueOrDefault(),
+                skipExistingChk.IsChecked.GetValueOrDefault(),
+                useShortChk.IsChecked.GetValueOrDefault()
+            );
         }
 
         private void cleanChk_Checked(object sender, RoutedEventArgs e)

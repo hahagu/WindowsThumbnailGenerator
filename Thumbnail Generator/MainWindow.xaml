@@ -34,10 +34,12 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <CheckBox x:Name="recursiveChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Recursive" ToolTip="This option will make the tool process all subdirectories as well as the root directory."></CheckBox>
-            <CheckBox x:Name="cleanChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Clear Explorer Cache" Grid.Column="1" Checked="cleanChk_Checked" ToolTip="This will clear the explorer cache upon completion." ></CheckBox>
+            <CheckBox x:Name="cleanChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Clear Icon Cache" Grid.Column="1" Checked="cleanChk_Checked" ToolTip="This option make the tool will clear the explorer cache upon completion." ></CheckBox>
             <CheckBox x:Name="skipExistingChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Skip Existing" Grid.Column="2" ToolTip="This option will make the tool skip directories that already has a desktop.ini file."></CheckBox>
+            <CheckBox x:Name="useShortChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Use Shorter Cover" Grid.Column="3" ToolTip="This option will make the tool use shorter covers, allowing you to see more contents."></CheckBox>
         </Grid>
         
         <Grid Grid.Row="2" >

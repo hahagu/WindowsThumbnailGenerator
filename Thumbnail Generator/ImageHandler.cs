@@ -11,23 +11,42 @@ namespace Thumbnail_Generator
 {
     class ImageHandler
     {
-        private static readonly int contentWidth = 224;
-        private static readonly int contentHeight = 75;
+        private static readonly int setContentWidth = 224;
+        private static readonly int setContentHeight = 75;
+        private static readonly int setContentHeightShort = 115;
 
-        public void generateThumbnail(string[] fileArray, string filePath)
+        public void generateThumbnail(string[] fileArray, string filePath, bool useShort = false)
         {
             using MagickImage bgImage = new MagickImage(bitmapToArray(Properties.Resources.Background));
-            using MagickImage contents = new MagickImage(compositeThumbnail(fileArray));
-            using MagickImage fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground));
 
-            contents.Crop(contentWidth, contentHeight);
+            int xOffset = 1;
+            int yOffset = -20;
 
-            bgImage.Composite(contents, Gravity.Center, 1, -20, CompositeOperator.Over);
+            MagickImage contents;
+            MagickImage fgImage;
+
+            if (useShort)
+            {
+                yOffset = 0;
+                contents = new MagickImage(compositeThumbnail(fileArray, setContentWidth, setContentHeightShort));
+                fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground_Short));
+                contents.Crop(setContentWidth, setContentHeightShort);
+            } else
+            {
+                contents = new MagickImage(compositeThumbnail(fileArray, setContentWidth, setContentHeight));
+                fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground));
+                contents.Crop(setContentWidth, setContentHeight);
+            }
+            
+            bgImage.Composite(contents, Gravity.Center, xOffset, yOffset, CompositeOperator.Over);
             bgImage.Composite(fgImage, Gravity.Center, CompositeOperator.Over);
             exportImage(bgImage.ToByteArray(), filePath);
+
+            contents.Dispose();
+            fgImage.Dispose();
         }
 
-        private byte[] compositeThumbnail(string[] fileArray)
+        private byte[] compositeThumbnail(string[] fileArray, int contentWidth, int contentHeight)
         {
             using MagickImageCollection magickCollection = new();
 
