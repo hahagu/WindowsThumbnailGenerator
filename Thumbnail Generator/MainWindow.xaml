@@ -29,7 +29,14 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <CheckBox x:Name="recursiveChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Recursive" ></CheckBox>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="recursiveChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Recursive" ToolTip="This option will make the tool process all subdirectories as well as the root directory."></CheckBox>
+            <CheckBox x:Name="cleanChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Clear Explorer Cache" Grid.Column="1" Checked="cleanChk_Checked" ToolTip="This will clear the explorer cache upon completion." ></CheckBox>
+            <CheckBox x:Name="skipExistingChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Skip Existing" Grid.Column="2" ToolTip="This option will make the tool skip directories that already has a desktop.ini file."></CheckBox>
         </Grid>
 
         <Button x:Name="startBtn" Grid.Row="2" Content="Start" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="startBtn_Click" ></Button>

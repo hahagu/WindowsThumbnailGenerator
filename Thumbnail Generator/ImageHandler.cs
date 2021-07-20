@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace Thumbnail_Generator
 {
@@ -15,9 +16,9 @@ namespace Thumbnail_Generator
 
         public void generateThumbnail(string[] fileArray, string filePath)
         {
-            MagickImage bgImage = new MagickImage(bitmapToArray(Properties.Resources.Background));
-            MagickImage contents = new MagickImage(compositeThumbnail(fileArray));
-            MagickImage fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground));
+            using MagickImage bgImage = new MagickImage(bitmapToArray(Properties.Resources.Background));
+            using MagickImage contents = new MagickImage(compositeThumbnail(fileArray));
+            using MagickImage fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground));
 
             contents.Crop(contentWidth, contentHeight);
 
@@ -112,6 +113,7 @@ namespace Thumbnail_Generator
         {
             using MemoryStream stream = new();
             src.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+
             return stream.ToArray();
         }
 
@@ -124,7 +126,8 @@ namespace Thumbnail_Generator
             }
             catch (MagickBlobErrorException e)
             {
-                MessageBox.Show("Error writing thumb.ico! Please check if the file is being used by another application!", "Write Error!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+                //MessageBox.Show("Error writing thumb.ico! Please check if the file is being used by another application!", "Write Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
