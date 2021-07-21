@@ -41,6 +41,15 @@ namespace Thumbnail_Generator
             currentProgress.Visibility = Visibility.Visible;
             progressLabel.Visibility = Visibility.Visible;
 
+            targetFolder.IsEnabled = false;
+            browseBtn.IsEnabled = false;
+            recursiveChk.IsEnabled = false;
+            cleanChk.IsEnabled = false;
+            skipExistingChk.IsEnabled = false;
+            useShortChk.IsEnabled = false;
+            maxThumbCount.IsEnabled = false;
+            maxThreadsCount.IsEnabled = false;
+
             string[] pathList = { rootFolder };
 
             if (recursive)
@@ -50,6 +59,8 @@ namespace Thumbnail_Generator
 
             await Task.Run(() => processParallel(pathList, fileCount, skipExisting, useShort, threadCount));
 
+            if (cleanChk.IsChecked.GetValueOrDefault()) clearCache();
+
             startBtn.IsEnabled = true;
             startBtn.Visibility = Visibility.Visible;
             currentProgress.Visibility = Visibility.Hidden;
@@ -57,7 +68,14 @@ namespace Thumbnail_Generator
             currentProgress.Value = 0;
             progressLabel.Content = "0%";
 
-            if (cleanChk.IsChecked.GetValueOrDefault()) clearCache();
+            targetFolder.IsEnabled = false;
+            browseBtn.IsEnabled = false;
+            recursiveChk.IsEnabled = false;
+            cleanChk.IsEnabled = false;
+            skipExistingChk.IsEnabled = false;
+            useShortChk.IsEnabled = false;
+            maxThumbCount.IsEnabled = false;
+            maxThreadsCount.IsEnabled = false;
         }
 
         private void processParallel(string[] pathList, int fileCount, bool skipExisting, bool useShort, int maxThreads = 4)
