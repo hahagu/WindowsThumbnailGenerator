@@ -7,5 +7,9 @@ namespace Thumbnail_Generator
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            InitializeComponent();
+        }
     }
 }

@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
+    <DisableWinExeOutputInference>true</DisableWinExeOutputInference>
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <RootNamespace>Thumbnail_Generator</RootNamespace>
     <UseWPF>true</UseWPF>
@@ -14,6 +15,7 @@
     <Copyright>Defyworks</Copyright>
     <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
+    <StartupObject>Thumbnail_Generator.EntryPoint</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
