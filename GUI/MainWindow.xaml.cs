@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using Thumbnail_Generator_Library;
+using Core_Library;
 
 namespace Thumbnail_Generator_GUI
 {
@@ -12,7 +12,7 @@ namespace Thumbnail_Generator_GUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow mainWindowInstance = new();
+        public static MainWindow mainWindowInstance = null;
 
         public MainWindow()
         {
