@@ -1,11 +1,6 @@
 ﻿using ImageMagick;
-using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.Windows.Threading;
 
 namespace Thumbnail_Generator
 {

@@ -1,13 +1,6 @@
 ﻿using Ookii.Dialogs.Wpf;
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -52,7 +45,7 @@ namespace Thumbnail_Generator
 
             ProcessHandler processHandler = new ProcessHandler();
 
-            processHandler.generateThumbnailsForFolder(
+            _ = processHandler.generateThumbnailsForFolder(
                 targetFolder.Text,
                 (int)maxThumbCount.Value,
                 (int)maxThreadsCount.Value,
