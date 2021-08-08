@@ -3,8 +3,9 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using Thumbnail_Generator_Library;
 
-namespace Thumbnail_Generator
+namespace Thumbnail_Generator_GUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -42,7 +43,7 @@ namespace Thumbnail_Generator
                 System.Windows.Forms.MessageBox.Show("The directory you chose does not exist!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
+            
             ProcessHandler processHandler = new ProcessHandler();
 
             _ = processHandler.generateThumbnailsForFolder(

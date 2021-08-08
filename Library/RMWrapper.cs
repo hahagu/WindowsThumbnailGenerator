@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 
-namespace Thumbnail_Generator
+namespace Thumbnail_Generator_Library
 {
     /// <summary>
     ///     Represents a Restart Manager session. The Restart Manager enables all but the critical system services to be shut

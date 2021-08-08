@@ -1,6 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
-namespace Thumbnail_Generator
+namespace Thumbnail_Generator_GUI
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -9,7 +10,6 @@ namespace Thumbnail_Generator
     {
         public App()
         {
-            InitializeComponent();
         }
     }
 }

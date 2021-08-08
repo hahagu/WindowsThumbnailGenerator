@@ -1,7 +1,7 @@
-﻿<Application x:Class="Thumbnail_Generator.App"
+﻿<Application x:Class="Thumbnail_Generator_GUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Thumbnail_Generator"
+             xmlns:local="clr-namespace:Thumbnail_Generator_GUI"
              xmlns:ui="http://schemas.modernwpf.com/2019"
              StartupUri="MainWindow.xaml">
     <Application.Resources>

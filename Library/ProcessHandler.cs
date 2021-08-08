@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Thumbnail_Generator
+namespace Thumbnail_Generator_Library
 {
-    class ProcessHandler
+    public class ProcessHandler
     {
         private static readonly string[] supportedFiles = {
             "jpg", "jpeg", "png", "mp4", "mov", "wmv", "avi", "mkv"
@@ -20,8 +20,6 @@ namespace Thumbnail_Generator
             progressCount = 0;
             progressPercentage = 0;
 
-            if (MainWindow.mainWindowInstance != null) MainWindow.disableControls();
-
             string[] pathList = { rootFolder };
 
             if (recursive)
@@ -31,11 +29,7 @@ namespace Thumbnail_Generator
 
             await Task.Run(() => processParallel(pathList, fileCount, skipExisting, useShort, threadCount));
 
-            if (MainWindow.mainWindowInstance != null) MainWindow.setProgress(100);
-
             if (clearCache) fsHandler.clearCache();
-
-            if (MainWindow.mainWindowInstance != null) MainWindow.enableControls();
         }
 
         private void processParallel(string[] pathList, int fileCount, bool skipExisting, bool useShort, int maxThreads = 4)
@@ -68,8 +62,6 @@ namespace Thumbnail_Generator
 
                       progressCount++;
                       progressPercentage = (float)progressCount / pathList.Length * 100;
-
-                      if (MainWindow.mainWindowInstance != null) MainWindow.setProgress(progressPercentage);
                   }
               );
         }
