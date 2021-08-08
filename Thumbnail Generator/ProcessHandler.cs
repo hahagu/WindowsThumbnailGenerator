@@ -20,7 +20,7 @@ namespace Thumbnail_Generator
 
         private FSHandler fsHandler = new FSHandler();
 
-        public async void generateThumbnailsForFolder(string rootFolder, int fileCount, int threadCount, bool recursive, bool skipExisting, bool useShort, bool clearCache)
+        public async Task generateThumbnailsForFolder(string rootFolder, int fileCount, int threadCount, bool recursive, bool skipExisting, bool useShort, bool clearCache)
         {
             progressCount = 0;
             progressPercentage = 0;
@@ -69,7 +69,7 @@ namespace Thumbnail_Generator
                       imageHandler.generateThumbnail(fileList, iconLocation, useShort);
 
                       fsHandler.setSystem(iconLocation);
-                      fsHandler.applyFolderIcon(directory, iconLocation);
+                      fsHandler.applyFolderIcon(directory, @".\thumb.ico");
 
                       progressCount++;
                       progressPercentage = (float)progressCount / pathList.Length * 100;
