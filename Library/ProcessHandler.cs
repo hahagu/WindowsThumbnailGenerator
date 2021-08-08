@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Thumbnail_Generator_Library
+namespace Core_Library
 {
     public class ProcessHandler
     {
