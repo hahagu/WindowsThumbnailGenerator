@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -38,6 +39,8 @@ namespace Core_Library
                 new ParallelOptions { MaxDegreeOfParallelism = maxThreads },
                 directory =>
                 {
+                    progressCount++;
+
                     string iconLocation = Path.Combine(directory, "thumb.ico");
                     string iniLocation = Path.Combine(directory, "desktop.ini");
 
@@ -60,7 +63,6 @@ namespace Core_Library
                     fsHandler.setSystem(iconLocation);
                     fsHandler.applyFolderIcon(directory, @".\thumb.ico");
 
-                    progressCount++;
                     progressPercentage = (float)progressCount / pathList.Length * 100;
 
                     progress.Report(progressPercentage);
