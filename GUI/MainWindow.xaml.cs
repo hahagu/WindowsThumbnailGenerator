@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Windows;
 using Core_Library;
-using System.Threading.Tasks;
 
 namespace Thumbnail_Generator_GUI
 {
