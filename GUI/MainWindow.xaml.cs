@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Windows;
 using Core_Library;
+using System.Threading.Tasks;
 
 namespace Thumbnail_Generator_GUI
 {
@@ -28,29 +29,36 @@ namespace Thumbnail_Generator_GUI
             targetFolder.Text = folderBrowser.SelectedPath;
         }
 
-        private void startBtn_Click(object sender, RoutedEventArgs e)
+        private async void startBtn_Click(object sender, RoutedEventArgs e)
         {
+            disableControls();
+
             if (targetFolder.Text.Length <= 0)
             {
                 MessageBox.Show("You didn't choose a folder!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                enableControls();
                 return;
             } else if (!Directory.Exists(targetFolder.Text))
             {
                 MessageBox.Show("The directory you chose does not exist!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                enableControls();
                 return;
             }
             
-            ProcessHandler processHandler = new ProcessHandler();
+            Progress<float> progress = new Progress<float>(percentage => setProgress(percentage));
 
-            _ = processHandler.generateThumbnailsForFolder(
+            int result = await ProcessHandler.generateThumbnailsForFolder(
+                progress,
                 targetFolder.Text,
                 (int)maxThumbCount.Value,
-                (int)maxThreadsCount.Value,
                 recursiveChk.IsChecked.GetValueOrDefault(),
                 skipExistingChk.IsChecked.GetValueOrDefault(),
                 useShortChk.IsChecked.GetValueOrDefault(),
-                cleanChk.IsChecked.GetValueOrDefault()
+                cleanChk.IsChecked.GetValueOrDefault(),
+                (int)maxThreadsCount.Value
             );
+
+            enableControls();
         }
 
         private void cleanChk_Checked(object sender, RoutedEventArgs e)
