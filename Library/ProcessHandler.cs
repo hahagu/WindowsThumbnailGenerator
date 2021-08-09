@@ -24,10 +24,12 @@ namespace Core_Library
 
             string[] pathList = { rootFolder };
 
-            if (recursive)
-            {
-                pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
-            }
+            await Task.Run(() => {
+                if (recursive)
+                {
+                    pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
+                }
+            });
 
             await Task.Run(() =>
             {
@@ -65,8 +67,11 @@ namespace Core_Library
                 });
             });
 
-
-            if (clearCache) fsHandler.clearCache();
+            if (clearCache){
+                await Task.Run(() => {
+                   fsHandler.clearCache();
+                });
+            }
 
             return 0;
         }

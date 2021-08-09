@@ -32,6 +32,7 @@ namespace Thumbnail_Generator_GUI
         private async void startBtn_Click(object sender, RoutedEventArgs e)
         {
             disableControls();
+            resetProgress();
 
             if (targetFolder.Text.Length <= 0)
             {
@@ -46,7 +47,6 @@ namespace Thumbnail_Generator_GUI
             }
             
             Progress<float> progress = new Progress<float>(percentage => setProgress(percentage));
-
             int result = await ProcessHandler.generateThumbnailsForFolder(
                 progress,
                 targetFolder.Text,
@@ -106,6 +106,12 @@ namespace Thumbnail_Generator_GUI
         {
             currentProgress.Value = progressPercentage;
             progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
+        }
+
+        public void resetProgress()
+        {
+            currentProgress.Value = 0;
+            progressLabel.Content = "Initializing..";
         }
     }
 }
