@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.IO;
 
-namespace Core_Library
+namespace Thumbnail_Generator_Library
 {
     class ImageHandler
     {

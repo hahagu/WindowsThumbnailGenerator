@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <RootNamespace>Thumbnail_Generator_Library</RootNamespace>
+    <AssemblyName>Thumbnail Generator Library</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

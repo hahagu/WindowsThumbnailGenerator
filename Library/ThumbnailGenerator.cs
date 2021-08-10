@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace Core_Library
+namespace Thumbnail_Generator_Library
 {
     [Flags]
     public enum ThumbnailOptions

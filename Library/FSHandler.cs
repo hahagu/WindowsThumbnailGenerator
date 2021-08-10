@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Core_Library
+namespace Thumbnail_Generator_Library
 {
     class FSHandler
     {

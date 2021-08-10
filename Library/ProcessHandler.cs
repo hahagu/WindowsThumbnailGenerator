@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core_Library
+namespace Thumbnail_Generator_Library
 {
     public class ProcessHandler
     {
@@ -18,7 +18,7 @@ namespace Core_Library
 
         private static FSHandler fsHandler = new FSHandler();
 
-        public static async Task<int> generateThumbnailsForFolder(IProgress<float> progress, string rootFolder, int fileCount, bool recursive, bool skipExisting, bool useShort, bool clearCache, int maxThreads = 4)
+        public static async Task<int> generateThumbnailsForFolder(IProgress<float> progress, string rootFolder, int fileCount, int maxThreads, bool recursive, bool clearCache, bool skipExisting, bool useShort)
         {
             progressCount = 0;
             progressPercentage = 0;
