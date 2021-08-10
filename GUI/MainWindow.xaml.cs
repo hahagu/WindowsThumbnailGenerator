@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using System.Windows;
-using Core_Library;
+using Thumbnail_Generator_Library;
 
 namespace Thumbnail_Generator_GUI
 {
@@ -50,11 +50,11 @@ namespace Thumbnail_Generator_GUI
                 progress,
                 targetFolder.Text,
                 (int)maxThumbCount.Value,
+                (int)maxThreadsCount.Value,
                 recursiveChk.IsChecked.GetValueOrDefault(),
-                skipExistingChk.IsChecked.GetValueOrDefault(),
-                useShortChk.IsChecked.GetValueOrDefault(),
                 cleanChk.IsChecked.GetValueOrDefault(),
-                (int)maxThreadsCount.Value
+                skipExistingChk.IsChecked.GetValueOrDefault(),
+                useShortChk.IsChecked.GetValueOrDefault()
             );
 
             enableControls();

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
-    <RootNamespace>Thumbnail_Generator</RootNamespace>
+    <RootNamespace>Thumbnail_Generator_GUI</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <SignAssembly>false</SignAssembly>
@@ -16,6 +16,7 @@
     <PackageIconUrl />
     <StartupObject></StartupObject>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <AssemblyName>Thumbnail Generator GUI</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
