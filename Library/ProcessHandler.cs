@@ -45,6 +45,8 @@ namespace Thumbnail_Generator_Library
                 directory =>
                 {
                     progressCount++;
+                    progressPercentage = (float)progressCount / pathList.Length * 100;
+                    progress.Report(progressPercentage);
 
                     string iconLocation = Path.Combine(directory, "thumb.ico");
                     string iniLocation = Path.Combine(directory, "desktop.ini");
@@ -62,17 +64,20 @@ namespace Thumbnail_Generator_Library
                         fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
                     }
 
-                    if (fileList.Length <= 0) return;
-                    if (fileList.Length > maxThumbCount) fileList = fileList.Take(maxThumbCount).ToArray();
+                    if (fileList.Length <= 0)
+                    {
+                        return;
+                    }
+
+                    if (fileList.Length > maxThumbCount)
+                    {
+                        fileList = fileList.Take(maxThumbCount).ToArray(); 
+                    }
 
                     ImageHandler.GenerateThumbnail(fileList, iconLocation, shortCover);
 
                     FSHandler.SetSystem(iconLocation);
                     FSHandler.ApplyFolderIcon(directory, @".\thumb.ico");
-
-                    progressPercentage = (float)progressCount / pathList.Length * 100;
-
-                    progress.Report(progressPercentage);
                 });
             });
 
