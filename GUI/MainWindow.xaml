@@ -75,7 +75,7 @@
 
         <Button x:Name="StartBtn" Grid.Row="3" Content="Start" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="StartBtn_Click" ></Button>
 
-        <ProgressBar x:Name="CurrentProgress" Grid.Row="3" Height="30" Cursor="Wait" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Value="62" Opacity="1" Visibility="Hidden"/>
+        <ProgressBar x:Name="CurrentProgress" Grid.Row="3" Height="30" Cursor="Wait" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Value="0" Opacity="1" Visibility="Hidden"/>
         <Label x:Name="ProgressLabel" Content="0%" Margin="0,0,0,0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
 
     </Grid>
