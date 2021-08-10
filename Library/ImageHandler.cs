@@ -6,136 +6,136 @@ namespace Thumbnail_Generator_Library
 {
     class ImageHandler
     {
-        private static readonly int SetContentWidth = 224;
-        private static readonly int SetContentHeight = 75;
-        private static readonly int SetContentHeightShort = 115;
+        private static readonly int setContentWidth = 224;
+        private static readonly int setContentHeight = 75;
+        private static readonly int setContentHeightShort = 115;
 
-        public static void GenerateThumbnail(string[] FileArray, string FilePath, bool ShortCover = false)
+        public static void GenerateThumbnail(string[] fileArray, string filePath, bool shortCover = false)
         {
-            using MagickImage BackgroundImage = new(BitmapToArray(Properties.Resources.Background));
+            using MagickImage bgImage = new(BitmapToArray(Properties.Resources.Background));
 
-            int X_Offset = 1;
-            int Y_Offset = -20;
+            int xOffset = 1;
+            int yOffset = -20;
 
-            MagickImage Contents;
-            MagickImage ForegroundImage;
+            MagickImage contents;
+            MagickImage fgImage;
 
-            if (ShortCover)
+            if (shortCover)
             {
-                Y_Offset = 0;
-                Contents = new(CompositeThumbnail(FileArray, SetContentWidth, SetContentHeightShort));
-                ForegroundImage = new(BitmapToArray(Properties.Resources.Foreground_Short));
-                Contents.Crop(SetContentWidth, SetContentHeightShort);
+                yOffset = 0;
+                contents = new(CompositeThumbnail(fileArray, setContentWidth, setContentHeightShort));
+                fgImage = new(BitmapToArray(Properties.Resources.Foreground_Short));
+                contents.Crop(setContentWidth, setContentHeightShort);
             } else
             {
-                Contents = new(CompositeThumbnail(FileArray, SetContentWidth, SetContentHeight));
-                ForegroundImage = new(BitmapToArray(Properties.Resources.Foreground));
-                Contents.Crop(SetContentWidth, SetContentHeight);
+                contents = new(CompositeThumbnail(fileArray, setContentWidth, setContentHeight));
+                fgImage = new(BitmapToArray(Properties.Resources.Foreground));
+                contents.Crop(setContentWidth, setContentHeight);
             }
             
-            BackgroundImage.Composite(Contents, Gravity.Center, X_Offset, Y_Offset, CompositeOperator.Over);
-            BackgroundImage.Composite(ForegroundImage, Gravity.Center, CompositeOperator.Over);
-            ExportImage(BackgroundImage.ToByteArray(), FilePath);
+            bgImage.Composite(contents, Gravity.Center, xOffset, yOffset, CompositeOperator.Over);
+            bgImage.Composite(fgImage, Gravity.Center, CompositeOperator.Over);
+            ExportImage(bgImage.ToByteArray(), filePath);
 
-            Contents.Dispose();
-            ForegroundImage.Dispose();
+            contents.Dispose();
+            fgImage.Dispose();
         }
 
-        private static byte[] CompositeThumbnail(string[] FileArray, int ContentWidth, int ContentHeight)
+        private static byte[] CompositeThumbnail(string[] fileArray, int contentWidth, int contentHeight)
         {
-            using MagickImageCollection MagickCollection = new();
+            using MagickImageCollection magickCollection = new();
 
-            bool IsFirst = true;
-            foreach (string FilePath in FileArray)
+            bool isFirst = true;
+            foreach (string filePath in fileArray)
             {
-                using Bitmap Thumb = WindowsThumbnailProvider.GetThumbnail(
-                    FilePath, 1024, 1024, ThumbnailOptions.None);
-                using MagickImage Image = new(BitmapToArray(Thumb));
+                using Bitmap thumb = WindowsThumbnailProvider.GetThumbnail(
+                    filePath, 1024, 1024, ThumbnailOptions.None);
+                using MagickImage thumbModified = new(BitmapToArray(thumb));
 
-                int CalculatedHeight = Image.Height * (ContentWidth / Image.Height);
-                Image.Scale(ContentWidth, CalculatedHeight);
-                Image.Extent(0, Image.Height / 8, ContentWidth, ContentHeight / FileArray.Length);
-                Image.RePage();
+                int calculatedHeight = thumbModified.Height * (contentWidth / thumbModified.Height);
+                thumbModified.Scale(contentWidth, calculatedHeight);
+                thumbModified.Extent(0, thumbModified.Height / 8, contentWidth, contentHeight / fileArray.Length);
+                thumbModified.RePage();
 
-                MagickImage CompositeImage = new(ApplyGradient(Image.ToByteArray()));
+                MagickImage compositeImage = new(ApplyGradient(thumbModified.ToByteArray()));
 
-                if (IsFirst)
+                if (isFirst)
                 {
-                    MagickImage RoundedImage = new(RoundEdges(CompositeImage.ToByteArray()));
-                    MagickCollection.Add(RoundedImage);
-                    IsFirst = false;
+                    MagickImage roundedImage = new(RoundEdges(compositeImage.ToByteArray()));
+                    magickCollection.Add(roundedImage);
+                    isFirst = false;
                 }
                 else
                 {
-                    MagickCollection.Add(CompositeImage);
+                    magickCollection.Add(compositeImage);
                 }
 
-                Thumb.Dispose();
+                thumb.Dispose();
             }
 
-            byte[] ResultBytes = MagickCollection.AppendVertically().ToByteArray();
+            byte[] resultBytes = magickCollection.AppendVertically().ToByteArray();
 
-            return ResultBytes;
+            return resultBytes;
         }
 
-        private static byte[] RoundEdges(byte[] SourceBytes, int Radius = 10)
+        private static byte[] RoundEdges(byte[] sourceBytes, int radius = 10)
         {
-            using MagickImage SourceImage = new MagickImage(SourceBytes);
+            using MagickImage sourceImage = new MagickImage(sourceBytes);
 
-            MagickImage Mask = new(MagickColors.White, SourceImage.Width, SourceImage.Height);
+            MagickImage maskImage = new(MagickColors.White, sourceImage.Width, sourceImage.Height);
             _ = new Drawables()
                 .FillColor(MagickColors.Black)
                 .StrokeColor(MagickColors.Black)
-                .Polygon(new PointD(0, 0), new PointD(0, Radius), new PointD(Radius, 0))
-                .Polygon(new PointD(Mask.Width, 0), new PointD(Mask.Width, Radius), new PointD(Mask.Width - Radius, 0))
+                .Polygon(new PointD(0, 0), new PointD(0, radius), new PointD(radius, 0))
+                .Polygon(new PointD(maskImage.Width, 0), new PointD(maskImage.Width, radius), new PointD(maskImage.Width - radius, 0))
                 .FillColor(MagickColors.White)
                 .StrokeColor(MagickColors.White)
-                .Circle(Radius, Radius, Radius, 0)
-                .Circle(Mask.Width - Radius, Radius, Mask.Width - Radius, 0)
-                .Draw(Mask);
+                .Circle(radius, radius, radius, 0)
+                .Circle(maskImage.Width - radius, radius, maskImage.Width - radius, 0)
+                .Draw(maskImage);
 
             // Copy Alpha
-            using (IMagickImage<ushort> ImageAlpha = SourceImage.Clone())
+            using (IMagickImage<ushort> imageAlpha = sourceImage.Clone())
             {
-                ImageAlpha.Alpha(AlphaOption.Extract);
-                ImageAlpha.Opaque(MagickColors.White, MagickColors.None);
-                Mask.Composite(ImageAlpha, CompositeOperator.Over);
+                imageAlpha.Alpha(AlphaOption.Extract);
+                imageAlpha.Opaque(MagickColors.White, MagickColors.None);
+                maskImage.Composite(imageAlpha, CompositeOperator.Over);
             }
 
-            Mask.HasAlpha = false;
-            SourceImage.HasAlpha = false;
-            SourceImage.Composite(Mask, CompositeOperator.CopyAlpha);
+            maskImage.HasAlpha = false;
+            sourceImage.HasAlpha = false;
+            sourceImage.Composite(maskImage, CompositeOperator.CopyAlpha);
 
-            return SourceImage.ToByteArray();
+            return sourceImage.ToByteArray();
         }
 
-        private static byte[] ApplyGradient(byte[] SourceBytes)
+        private static byte[] ApplyGradient(byte[] sourceBytes)
         {
-            using MagickImage SourceImage = new(SourceBytes);
+            using MagickImage sourceImage = new(sourceBytes);
 
-            MagickImage Gradient = new("gradient:none-black", SourceImage.Width, SourceImage.Height);
+            MagickImage Gradient = new("gradient:none-black", sourceImage.Width, sourceImage.Height);
             Gradient.Alpha(AlphaOption.Set);
             Gradient.Evaluate(Channels.Alpha, EvaluateOperator.Divide, 2);
 
-            SourceImage.Composite(Gradient, CompositeOperator.Over);
+            sourceImage.Composite(Gradient, CompositeOperator.Over);
 
-            return SourceImage.ToByteArray();
+            return sourceImage.ToByteArray();
         }
 
-        private static byte[] BitmapToArray(Bitmap SourceBitmap)
+        private static byte[] BitmapToArray(Bitmap sourceBitmap)
         {
-            using MemoryStream Stream = new();
-            SourceBitmap.Save(Stream, System.Drawing.Imaging.ImageFormat.Png);
+            using MemoryStream stream = new();
+            sourceBitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
 
-            return Stream.ToArray();
+            return stream.ToArray();
         }
 
-        private static void ExportImage(byte[] SourceImage, string FilePath)
+        private static void ExportImage(byte[] sourceImage, string filePath)
         {
-            using MagickImage OutputImage = new(SourceImage);
+            using MagickImage outputImage = new(sourceImage);
             try
             {
-                OutputImage.Write(FilePath);
+                outputImage.Write(filePath);
             }
             catch (MagickBlobErrorException)
             {

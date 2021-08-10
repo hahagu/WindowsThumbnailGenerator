@@ -45,7 +45,7 @@ namespace Thumbnail_Generator_GUI
                 return;
             }
             
-            Progress<float> progress = new Progress<float>(percentage => SetProgress(percentage));
+            Progress<float> progress = new(percentage => SetProgress(percentage));
             int result = await ProcessHandler.GenerateThumbnailsForFolder(
                 progress,
                 TargetFolder.Text,
@@ -101,10 +101,10 @@ namespace Thumbnail_Generator_GUI
             MaxThreadsCount.IsEnabled = false;
         }
 
-        public void SetProgress(float progressPercentage)
+        public void SetProgress(float percentage)
         {
-            CurrentProgress.Value = progressPercentage;
-            ProgressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
+            CurrentProgress.Value = percentage;
+            ProgressLabel.Content = string.Format("{0:0.##}", percentage) + "%";
         }
 
         public void ResetProgress()

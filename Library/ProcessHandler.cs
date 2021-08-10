@@ -7,24 +7,33 @@ namespace Thumbnail_Generator_Library
 {
     public class ProcessHandler
     {
-        private static readonly string[] SupportedFiles = {
+        private static readonly string[] supportedFiles = {
             "jpg", "jpeg", "png", "mp4", "mov", "wmv", "avi", "mkv"
         };
 
-        private static volatile int ProgressCount;
-        private static volatile float ProgressPercentage;
+        private static volatile int progressCount;
+        private static volatile float progressPercentage;
 
-        public static async Task<int> GenerateThumbnailsForFolder(IProgress<float> Progress, string RootFolder, int FileCount, int MaxThreads, bool Recurse, bool ClearCache, bool SkipExisting, bool ShortCover)
+        public static async Task<int> GenerateThumbnailsForFolder(
+            IProgress<float> progress,
+            string rootFolder,
+            int maxThumbCount,
+            int maxThreads,
+            bool recurse,
+            bool clearCache,
+            bool skipExisting,
+            bool shortCover
+        )
         {
-            ProgressCount = 0;
-            ProgressPercentage = 0;
+            progressCount = 0;
+            progressPercentage = 0;
 
-            string[] pathList = { RootFolder };
+            string[] pathList = { rootFolder };
 
             await Task.Run(() => {
-                if (Recurse)
+                if (recurse)
                 {
-                    pathList = pathList.Concat(Directory.GetDirectories(RootFolder, "*", SearchOption.AllDirectories)).ToArray();
+                    pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
                 }
             });
 
@@ -32,42 +41,42 @@ namespace Thumbnail_Generator_Library
             {
                 _ = Parallel.ForEach(
                 pathList,
-                new ParallelOptions { MaxDegreeOfParallelism = MaxThreads },
+                new ParallelOptions { MaxDegreeOfParallelism = maxThreads },
                 directory =>
                 {
-                    ProgressCount++;
+                    progressCount++;
 
                     string iconLocation = Path.Combine(directory, "thumb.ico");
                     string iniLocation = Path.Combine(directory, "desktop.ini");
 
-                    if (File.Exists(iniLocation) && SkipExisting)
+                    if (File.Exists(iniLocation) && skipExisting)
                     {
                         return;
                     }
 
                     FSHandler.UnsetSystem(iconLocation);
 
-                    string[] FileList = { };
-                    foreach (string fileFormat in SupportedFiles)
+                    string[] fileList = { };
+                    foreach (string fileFormat in supportedFiles)
                     {
-                        FileList = FileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
+                        fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
                     }
 
-                    if (FileList.Length <= 0) return;
-                    if (FileList.Length > FileCount) FileList = FileList.Take(FileCount).ToArray();
+                    if (fileList.Length <= 0) return;
+                    if (fileList.Length > maxThumbCount) fileList = fileList.Take(maxThumbCount).ToArray();
 
-                    ImageHandler.GenerateThumbnail(FileList, iconLocation, ShortCover);
+                    ImageHandler.GenerateThumbnail(fileList, iconLocation, shortCover);
 
                     FSHandler.SetSystem(iconLocation);
                     FSHandler.ApplyFolderIcon(directory, @".\thumb.ico");
 
-                    ProgressPercentage = (float)ProgressCount / pathList.Length * 100;
+                    progressPercentage = (float)progressCount / pathList.Length * 100;
 
-                    Progress.Report(ProgressPercentage);
+                    progress.Report(progressPercentage);
                 });
             });
 
-            if (ClearCache){
+            if (clearCache){
                 await Task.Run(() => {
                    FSHandler.ClearCache();
                 });
