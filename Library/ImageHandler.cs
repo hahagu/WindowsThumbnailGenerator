@@ -12,7 +12,7 @@ namespace Thumbnail_Generator_Library
 
         public void generateThumbnail(string[] fileArray, string filePath, bool useShort = false)
         {
-            using MagickImage bgImage = new MagickImage(bitmapToArray(Library.Properties.Resources.Background));
+            using MagickImage bgImage = new MagickImage(bitmapToArray(Properties.Resources.Background));
 
             int xOffset = 1;
             int yOffset = -20;
@@ -24,12 +24,12 @@ namespace Thumbnail_Generator_Library
             {
                 yOffset = 0;
                 contents = new MagickImage(compositeThumbnail(fileArray, setContentWidth, setContentHeightShort));
-                fgImage = new MagickImage(bitmapToArray(Library.Properties.Resources.Foreground_Short));
+                fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground_Short));
                 contents.Crop(setContentWidth, setContentHeightShort);
             } else
             {
                 contents = new MagickImage(compositeThumbnail(fileArray, setContentWidth, setContentHeight));
-                fgImage = new MagickImage(bitmapToArray(Library.Properties.Resources.Foreground));
+                fgImage = new MagickImage(bitmapToArray(Properties.Resources.Foreground));
                 contents.Crop(setContentWidth, setContentHeight);
             }
             
