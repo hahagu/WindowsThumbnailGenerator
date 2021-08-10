@@ -1,77 +1,75 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Thumbnail_Generator_Library
 {
     public class ProcessHandler
     {
-        private static readonly string[] supportedFiles = {
+        private static readonly string[] SupportedFiles = {
             "jpg", "jpeg", "png", "mp4", "mov", "wmv", "avi", "mkv"
         };
 
-        private static volatile int progressCount;
-        private static volatile float progressPercentage;
+        private static volatile int ProgressCount;
+        private static volatile float ProgressPercentage;
 
-        private static FSHandler fsHandler = new FSHandler();
-
-        public static async Task<int> generateThumbnailsForFolder(IProgress<float> progress, string rootFolder, int fileCount, int maxThreads, bool recursive, bool clearCache, bool skipExisting, bool useShort)
+        public static async Task<int> GenerateThumbnailsForFolder(IProgress<float> Progress, string RootFolder, int FileCount, int MaxThreads, bool Recurse, bool ClearCache, bool SkipExisting, bool ShortCover)
         {
-            progressCount = 0;
-            progressPercentage = 0;
+            ProgressCount = 0;
+            ProgressPercentage = 0;
 
-            string[] pathList = { rootFolder };
+            string[] pathList = { RootFolder };
 
             await Task.Run(() => {
-                if (recursive)
+                if (Recurse)
                 {
-                    pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
+                    pathList = pathList.Concat(Directory.GetDirectories(RootFolder, "*", SearchOption.AllDirectories)).ToArray();
                 }
             });
 
             await Task.Run(() =>
             {
-                Parallel.ForEach(
+                _ = Parallel.ForEach(
                 pathList,
-                new ParallelOptions { MaxDegreeOfParallelism = maxThreads },
+                new ParallelOptions { MaxDegreeOfParallelism = MaxThreads },
                 directory =>
                 {
-                    progressCount++;
+                    ProgressCount++;
 
                     string iconLocation = Path.Combine(directory, "thumb.ico");
                     string iniLocation = Path.Combine(directory, "desktop.ini");
 
-                    if (File.Exists(iniLocation) && skipExisting) return;
-
-                    ImageHandler imageHandler = new();
-                    fsHandler.unsetSystem(iconLocation);
-
-                    string[] fileList = { };
-                    foreach (string fileFormat in supportedFiles)
+                    if (File.Exists(iniLocation) && SkipExisting)
                     {
-                        fileList = fileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
+                        return;
                     }
 
-                    if (fileList.Length <= 0) return;
-                    if (fileList.Length > fileCount) fileList = fileList.Take(fileCount).ToArray();
+                    FSHandler.UnsetSystem(iconLocation);
 
-                    imageHandler.generateThumbnail(fileList, iconLocation, useShort);
+                    string[] FileList = { };
+                    foreach (string fileFormat in SupportedFiles)
+                    {
+                        FileList = FileList.Concat(Directory.GetFiles(directory, "*." + fileFormat)).ToArray();
+                    }
 
-                    fsHandler.setSystem(iconLocation);
-                    fsHandler.applyFolderIcon(directory, @".\thumb.ico");
+                    if (FileList.Length <= 0) return;
+                    if (FileList.Length > FileCount) FileList = FileList.Take(FileCount).ToArray();
 
-                    progressPercentage = (float)progressCount / pathList.Length * 100;
+                    ImageHandler.GenerateThumbnail(FileList, iconLocation, ShortCover);
 
-                    progress.Report(progressPercentage);
+                    FSHandler.SetSystem(iconLocation);
+                    FSHandler.ApplyFolderIcon(directory, @".\thumb.ico");
+
+                    ProgressPercentage = (float)ProgressCount / pathList.Length * 100;
+
+                    Progress.Report(ProgressPercentage);
                 });
             });
 
-            if (clearCache){
+            if (ClearCache){
                 await Task.Run(() => {
-                   fsHandler.clearCache();
+                   FSHandler.ClearCache();
                 });
             }
 

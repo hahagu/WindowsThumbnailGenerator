@@ -7,15 +7,15 @@ using System.Text;
 
 namespace Thumbnail_Generator_Library
 {
-    class FSHandler
+    internal class FSHandler
     {
-        public void applyFolderIcon(string targetFolderPath, string iconFilePath)
+        public static void ApplyFolderIcon(string targetFolderPath, string iconFilePath)
         {
-            var iniPath = Path.Combine(targetFolderPath, "desktop.ini");
-            unsetSystem(iniPath);
+            string iniPath = Path.Combine(targetFolderPath, "desktop.ini");
+            UnsetSystem(iniPath);
 
             // Writes desktop.ini Contents
-            var iniContents = new StringBuilder()
+            string iniContents = new StringBuilder()
                 .AppendLine("[.ShellClassInfo]")
                 .AppendLine("IconResource=" + iconFilePath + ",0")
                 .AppendLine("IconFile=" + iconFilePath)
@@ -33,10 +33,10 @@ namespace Thumbnail_Generator_Library
                 targetFolderPath,
                 FileAttributes.ReadOnly);
 
-            setSystem(iniPath);
+            SetSystem(iniPath);
         }
 
-        public void unsetSystem(string targetPath)
+        public static void UnsetSystem(string targetPath)
         {
             if (File.Exists(targetPath))
             {
@@ -48,14 +48,14 @@ namespace Thumbnail_Generator_Library
             }
         }
 
-        public void setSystem(string targetPath)
+        public static void SetSystem(string targetPath)
         {
             File.SetAttributes(
                targetPath,
                File.GetAttributes(targetPath) | FileAttributes.Hidden | FileAttributes.System);
         }
 
-        public void clearCache()
+        public static void ClearCache()
         {
             using RestartManagerSession rm = new();
             rm.RegisterProcess(GetShellProcess());

@@ -14,103 +14,103 @@ namespace Thumbnail_Generator_GUI
         public MainWindow()
         {
             InitializeComponent();
-            maxThreadsCount.Maximum = Convert.ToInt32(Environment.ProcessorCount);
-            maxThreadsCount.Value = Convert.ToInt32(Environment.ProcessorCount);
+            MaxThreadsCount.Maximum = Convert.ToInt32(Environment.ProcessorCount);
+            MaxThreadsCount.Value = Convert.ToInt32(Environment.ProcessorCount);
         }
 
-        private void browseBtn_Click(object sender, RoutedEventArgs e)
+        private void BrowseBtn_Click(object sender, RoutedEventArgs e)
         {
             VistaFolderBrowserDialog folderBrowser = new();
             if (!folderBrowser.ShowDialog().GetValueOrDefault())
             {
                 return;
             }
-            targetFolder.Text = folderBrowser.SelectedPath;
+            TargetFolder.Text = folderBrowser.SelectedPath;
         }
 
-        private async void startBtn_Click(object sender, RoutedEventArgs e)
+        private async void StartBtn_Click(object sender, RoutedEventArgs e)
         {
-            disableControls();
-            resetProgress();
+            DisableControls();
+            ResetProgress();
 
-            if (targetFolder.Text.Length <= 0)
+            if (TargetFolder.Text.Length <= 0)
             {
-                MessageBox.Show("You didn't choose a folder!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                enableControls();
+                _ = ModernWpf.MessageBox.Show("You didn't choose a folder!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                EnableControls();
                 return;
-            } else if (!Directory.Exists(targetFolder.Text))
+            } else if (!Directory.Exists(TargetFolder.Text))
             {
-                MessageBox.Show("The directory you chose does not exist!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                enableControls();
+                _ = ModernWpf.MessageBox.Show("The directory you chose does not exist!", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                EnableControls();
                 return;
             }
             
-            Progress<float> progress = new Progress<float>(percentage => setProgress(percentage));
-            int result = await ProcessHandler.generateThumbnailsForFolder(
+            Progress<float> progress = new Progress<float>(percentage => SetProgress(percentage));
+            int result = await ProcessHandler.GenerateThumbnailsForFolder(
                 progress,
-                targetFolder.Text,
-                (int)maxThumbCount.Value,
-                (int)maxThreadsCount.Value,
-                recursiveChk.IsChecked.GetValueOrDefault(),
-                cleanChk.IsChecked.GetValueOrDefault(),
-                skipExistingChk.IsChecked.GetValueOrDefault(),
-                useShortChk.IsChecked.GetValueOrDefault()
+                TargetFolder.Text,
+                (int)MaxThumbCount.Value,
+                (int)MaxThreadsCount.Value,
+                RecursiveChk.IsChecked.GetValueOrDefault(),
+                CleanChk.IsChecked.GetValueOrDefault(),
+                SkipExistingChk.IsChecked.GetValueOrDefault(),
+                UseShortChk.IsChecked.GetValueOrDefault()
             );
 
-            enableControls();
+            EnableControls();
         }
 
-        private void cleanChk_Checked(object sender, RoutedEventArgs e)
+        private void CleanChk_Checked(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Choosing this option will restart explorer!\nSave your work before proceeding!" , "Warning!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            _ = ModernWpf.MessageBox.Show("Choosing this option will restart explorer!\nSave your work before proceeding!", "Warning!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
-        public void enableControls()
+        public void EnableControls()
         {
-            startBtn.IsEnabled = true;
-            startBtn.Visibility = Visibility.Visible;
-            currentProgress.Visibility = Visibility.Hidden;
-            progressLabel.Visibility = Visibility.Hidden;
-            currentProgress.Value = 0;
-            progressLabel.Content = "0%";
+            StartBtn.IsEnabled = true;
+            StartBtn.Visibility = Visibility.Visible;
+            CurrentProgress.Visibility = Visibility.Hidden;
+            ProgressLabel.Visibility = Visibility.Hidden;
+            CurrentProgress.Value = 0;
+            ProgressLabel.Content = "0%";
             
-            targetFolder.IsEnabled = true;
-            browseBtn.IsEnabled = true;
-            recursiveChk.IsEnabled = true;
-            cleanChk.IsEnabled = true;
-            skipExistingChk.IsEnabled = true;
-            useShortChk.IsEnabled = true;
-            maxThumbCount.IsEnabled = true;
-            maxThreadsCount.IsEnabled = true;
+            TargetFolder.IsEnabled = true;
+            BrowseBtn.IsEnabled = true;
+            RecursiveChk.IsEnabled = true;
+            CleanChk.IsEnabled = true;
+            SkipExistingChk.IsEnabled = true;
+            UseShortChk.IsEnabled = true;
+            MaxThumbCount.IsEnabled = true;
+            MaxThreadsCount.IsEnabled = true;
         }
 
-        public void disableControls()
+        public void DisableControls()
         {
-            startBtn.IsEnabled = false;
-            startBtn.Visibility = Visibility.Hidden;
-            currentProgress.Visibility = Visibility.Visible;
-            progressLabel.Visibility = Visibility.Visible;
+            StartBtn.IsEnabled = false;
+            StartBtn.Visibility = Visibility.Hidden;
+            CurrentProgress.Visibility = Visibility.Visible;
+            ProgressLabel.Visibility = Visibility.Visible;
             
-            targetFolder.IsEnabled = false;
-            browseBtn.IsEnabled = false;
-            recursiveChk.IsEnabled = false;
-            cleanChk.IsEnabled = false;
-            skipExistingChk.IsEnabled = false;
-            useShortChk.IsEnabled = false;
-            maxThumbCount.IsEnabled = false;
-            maxThreadsCount.IsEnabled = false;
+            TargetFolder.IsEnabled = false;
+            BrowseBtn.IsEnabled = false;
+            RecursiveChk.IsEnabled = false;
+            CleanChk.IsEnabled = false;
+            SkipExistingChk.IsEnabled = false;
+            UseShortChk.IsEnabled = false;
+            MaxThumbCount.IsEnabled = false;
+            MaxThreadsCount.IsEnabled = false;
         }
 
-        public void setProgress(float progressPercentage)
+        public void SetProgress(float progressPercentage)
         {
-            currentProgress.Value = progressPercentage;
-            progressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
+            CurrentProgress.Value = progressPercentage;
+            ProgressLabel.Content = string.Format("{0:0.##}", progressPercentage) + "%";
         }
 
-        public void resetProgress()
+        public void ResetProgress()
         {
-            currentProgress.Value = 0;
-            progressLabel.Content = "Initializing..";
+            CurrentProgress.Value = 0;
+            ProgressLabel.Content = "Initializing..";
         }
     }
 }

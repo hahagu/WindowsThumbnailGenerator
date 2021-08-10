@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
     <RootNamespace>Thumbnail_Generator_GUI</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -12,19 +13,23 @@
     <Authors>Defyworks</Authors>
     <Company>Defyworks</Company>
     <Copyright>Defyworks</Copyright>
-    <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
     <StartupObject></StartupObject>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <AssemblyName>Thumbnail Generator GUI</AssemblyName>
+    <AssemblyName>Thumbnail_Generator</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ModernWpf.MessageBox" Version="0.5.1" />
     <PackageReference Include="ModernWpfUI" Version="0.9.4" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
   </ItemGroup>

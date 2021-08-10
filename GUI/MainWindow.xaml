@@ -25,8 +25,8 @@
                 <ColumnDefinition Width="120px"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBox x:Name="targetFolder" Height="32"></TextBox>
-            <Button x:Name="browseBtn" Grid.Column="1" Content="Browse" Height="32" HorizontalAlignment="Stretch" Click="browseBtn_Click" />
+            <TextBox x:Name="TargetFolder" Height="32"></TextBox>
+            <Button x:Name="BrowseBtn" Grid.Column="1" Content="Browse" Height="32" HorizontalAlignment="Stretch" Click="BrowseBtn_Click" />
         </Grid>
 
         <Grid Grid.Row="1">
@@ -36,10 +36,10 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <CheckBox x:Name="recursiveChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Recursive" ToolTip="This option will make the tool process all subdirectories as well as the root directory."></CheckBox>
-            <CheckBox x:Name="cleanChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Clear Icon Cache" Grid.Column="1" Checked="cleanChk_Checked" ToolTip="This option make the tool will clear the explorer cache upon completion." ></CheckBox>
-            <CheckBox x:Name="skipExistingChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Skip Existing" Grid.Column="2" ToolTip="This option will make the tool skip directories that already has a desktop.ini file."></CheckBox>
-            <CheckBox x:Name="useShortChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Use Shorter Cover" Grid.Column="3" ToolTip="This option will make the tool use shorter covers, allowing you to see more contents."></CheckBox>
+            <CheckBox x:Name="RecursiveChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Recursive" ToolTip="This option will make the tool process all subdirectories as well as the root directory."></CheckBox>
+            <CheckBox x:Name="CleanChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Clear Icon Cache" Grid.Column="1" Checked="CleanChk_Checked" ToolTip="This option make the tool will clear the explorer cache upon completion." ></CheckBox>
+            <CheckBox x:Name="SkipExistingChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Skip Existing" Grid.Column="2" ToolTip="This option will make the tool skip directories that already has a desktop.ini file."></CheckBox>
+            <CheckBox x:Name="UseShortChk" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Use Shorter Cover" Grid.Column="3" ToolTip="This option will make the tool use shorter covers, allowing you to see more contents."></CheckBox>
         </Grid>
         
         <Grid Grid.Row="2" >
@@ -54,7 +54,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="Max Thumbnails:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ui:NumberBox x:Name="maxThumbCount" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0"
+                <ui:NumberBox x:Name="MaxThumbCount" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0"
                               ValidationMode="InvalidInputOverwritten"
                               Value="3" Minimum="1" Maximum="100"
                               SpinButtonPlacementMode="Inline"></ui:NumberBox>
@@ -66,17 +66,17 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="Max Threads:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <ui:NumberBox x:Name="maxThreadsCount" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                <ui:NumberBox x:Name="MaxThreadsCount" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"
                               ValidationMode="InvalidInputOverwritten"
                               Value="1" Minimum="1"
                               SpinButtonPlacementMode="Inline"></ui:NumberBox>
             </Grid>
         </Grid>
 
-        <Button x:Name="startBtn" Grid.Row="3" Content="Start" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="startBtn_Click" ></Button>
+        <Button x:Name="StartBtn" Grid.Row="3" Content="Start" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="StartBtn_Click" ></Button>
 
-        <ProgressBar x:Name="currentProgress" Grid.Row="3" Height="30" Cursor="Wait" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Value="62" Opacity="1" Visibility="Hidden"/>
-        <Label x:Name="progressLabel" Content="0%" Margin="0,0,0,0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+        <ProgressBar x:Name="CurrentProgress" Grid.Row="3" Height="30" Cursor="Wait" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Value="62" Opacity="1" Visibility="Hidden"/>
+        <Label x:Name="ProgressLabel" Content="0%" Margin="0,0,0,0" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
 
     </Grid>
 </Window>
