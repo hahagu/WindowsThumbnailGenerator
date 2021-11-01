@@ -33,7 +33,7 @@ namespace Thumbnail_Generator_Library
             await Task.Run(() => {
                 if (recurse)
                 {
-                    pathList = pathList.Concat(Directory.GetDirectories(rootFolder, "*", SearchOption.AllDirectories)).ToArray();
+                    pathList = pathList.Concat(PathHandler.GetAllDirectories(rootFolder, "*")).ToArray();
                 }
             });
 
