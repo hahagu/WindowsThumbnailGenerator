@@ -19,15 +19,30 @@ namespace Thumbnail_Generator_Library
                 try
                 {
                     string[] subDir = Directory.GetDirectories(searchPath, searchPattern);
-                    foreach (string directories in subDir) {
-                        searchList.Push(directories);
-                        returnList.Push(directories);
+                    foreach (string directory in subDir) {
+                        searchList.Push(directory);
+                        if (IsDirectoryWritable(directory)) returnList.Push(directory);
                     }
                 }
                 catch { }
             }
 
             return returnList;
+        }
+
+
+        public static bool IsDirectoryWritable(string dirPath)
+        {
+            try
+            {
+                string randomFileName = Path.Combine(dirPath, Path.GetRandomFileName());
+                using (FileStream fs = File.Create(randomFileName, 1, FileOptions.DeleteOnClose)) { }
+                return true;
+            }
+            catch
+            {
+                 return false;
+            }
         }
     }
 }
