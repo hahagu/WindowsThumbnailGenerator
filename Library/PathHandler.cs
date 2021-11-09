@@ -18,7 +18,7 @@ namespace Thumbnail_Generator_Library
                 string searchPath = searchList.Pop();
                 try
                 {
-                    string[] subDir = Directory.GetDirectories(searchPath, searchPattern);
+                    List<string> subDir = new(Directory.EnumerateDirectories(searchPath, searchPattern));
                     foreach (string directory in subDir) {
                         searchList.Push(directory);
                         if (IsDirectoryWritable(directory)) returnList.Push(directory);
