@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUI", "GUI\GUI.csproj", "{1C74BB75-7C2A-4A87-8113-CFB772DDF970}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -11,8 +11,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "Library\Library.csproj", "{183FD757-E86E-4B35-A05E-6CA78FDB966C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.csproj", "{70C73F15-8B9C-4A50-8844-E0CCD7B96C95}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI2", "GUI2\GUI2.csproj", "{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,26 +86,6 @@ Global
 		{70C73F15-8B9C-4A50-8844-E0CCD7B96C95}.Release|x64.Build.0 = Release|Any CPU
 		{70C73F15-8B9C-4A50-8844-E0CCD7B96C95}.Release|x86.ActiveCfg = Release|Any CPU
 		{70C73F15-8B9C-4A50-8844-E0CCD7B96C95}.Release|x86.Build.0 = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|ARM.Build.0 = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|x64.Build.0 = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Debug|x86.Build.0 = Debug|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|ARM.ActiveCfg = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|ARM.Build.0 = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|ARM64.Build.0 = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|x64.ActiveCfg = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|x64.Build.0 = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|x86.ActiveCfg = Release|Any CPU
-		{F09AF45D-FE0F-40F5-9A78-AFD9181E5178}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
